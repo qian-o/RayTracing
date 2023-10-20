@@ -10,25 +10,25 @@ public class Chapter2 : IChapter
     public void Run()
     {
         // Image
-        const int imageWidth = 256;
-        const int imageHeight = 256;
+        const int image_width = 256;
+        const int image_height = 256;
 
         // Render
         using FileStream fileStream = File.Create("image.ppm");
         using StreamWriter streamWriter = new(fileStream);
 
         streamWriter.WriteLine("P3");
-        streamWriter.WriteLine($"{imageWidth} {imageHeight}");
+        streamWriter.WriteLine($"{image_width} {image_height}");
         streamWriter.WriteLine("255");
 
-        for (int i = 0; i < imageHeight; i++)
+        for (int i = 0; i < image_height; i++)
         {
-            Console.WriteLine($"Scanlines remaining: {imageHeight - i}");
+            Console.WriteLine($"Scanlines remaining: {image_height - i}");
 
-            for (int j = 0; j < imageWidth; j++)
+            for (int j = 0; j < image_width; j++)
             {
-                double r = (double)j / (imageWidth - 1);
-                double g = (double)i / (imageHeight - 1);
+                double r = (double)j / (image_width - 1);
+                double g = (double)i / (image_height - 1);
                 double b = 0.25;
 
                 int ir = (int)(255.999 * r);

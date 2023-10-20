@@ -9,7 +9,7 @@ internal class Program
     {
         _ = args;
 
-        IChapter chapter = new Chapter3();
+        IChapter chapter = new Chapter4();
 
         chapter.Run();
 
