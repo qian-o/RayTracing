@@ -112,7 +112,7 @@ public class Camera
 
         if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), out HitRecord rec))
         {
-            Vector3D<double> direction = MathHelper.RandomOnHemisphere(rec.Normal);
+            Vector3D<double> direction = rec.Normal + MathHelper.RandomUnitVector();
 
             return 0.5 * RayColor(new Ray(rec.P, direction), depth - 1, world);
         }
@@ -121,6 +121,16 @@ public class Camera
         double a = 0.5 * (unit_direction.Y + 1.0);
 
         return (1.0 - a) * Vector3D<double>.One + a * new Vector3D<double>(0.5, 0.7, 1.0);
+    }
+
+    public static double LinearToGamma(double linear_component)
+    {
+        if (linear_component > 0.0)
+        {
+            return Math.Sqrt(linear_component);
+        }
+
+        return 0.0;
     }
 
     private static void WriteColor(StreamWriter streamWriter, Vector3D<double> pixelColor, int samples_per_pixel)
@@ -134,6 +144,11 @@ public class Camera
         r *= scale;
         g *= scale;
         b *= scale;
+
+        // Apply the linear to gamma transform.
+        r = LinearToGamma(r);
+        g = LinearToGamma(g);
+        b = LinearToGamma(b);
 
         // Write the translated [0,255] value of each color component.
         Interval interval = new(0.0, 0.999);
