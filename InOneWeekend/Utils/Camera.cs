@@ -1,4 +1,5 @@
 ﻿using InOneWeekend.Contracts.Models;
+using InOneWeekend.Helpers;
 using Silk.NET.Maths;
 
 namespace InOneWeekend.Utils;
@@ -8,6 +9,7 @@ public class Camera
     private double aspect_ratio = 1.0;
     private int image_width = 100;
     private int image_height;
+    private int samples_per_pixel = 10;
     private Vector3D<double> center;
     private Vector3D<double> pixel00_loc;
     private Vector3D<double> pixel_delta_u;
@@ -16,6 +18,8 @@ public class Camera
     public double AspectRatio { get => aspect_ratio; set => aspect_ratio = value; }
 
     public int ImageWidth { get => image_width; set => image_width = value; }
+
+    public int Samples { get => samples_per_pixel; set => samples_per_pixel = value; }
 
     public void Render(Hittable world)
     {
@@ -34,13 +38,15 @@ public class Camera
 
             for (int j = 0; j < image_width; j++)
             {
-                Vector3D<double> pixel_center = pixel00_loc + (j * pixel_delta_u) + (i * pixel_delta_v);
-                Vector3D<double> ray_direction = pixel_center - center;
-                Ray ray = new(center, ray_direction);
+                Vector3D<double> pixel_color = Vector3D<double>.Zero;
+                for (int sample = 0; sample < samples_per_pixel; sample++)
+                {
+                    Ray r = GetRay(i, j);
 
-                Vector3D<double> pixel_color = RayColor(ray, world);
+                    pixel_color += RayColor(r, world);
+                }
 
-                WriteColor(streamWriter, pixel_color);
+                WriteColor(streamWriter, pixel_color, samples_per_pixel);
             }
         }
 
@@ -72,6 +78,27 @@ public class Camera
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
     }
 
+    private Ray GetRay(int i, int j)
+    {
+        // Get a randomly sampled camera ray for the pixel at location i,j.
+        Vector3D<double> pixel_center = pixel00_loc + (j * pixel_delta_u) + (i * pixel_delta_v);
+        Vector3D<double> pixel_sample = pixel_center + PixelSampleSquare();
+
+        Vector3D<double> ray_origin = center;
+        Vector3D<double> ray_direction = pixel_sample - ray_origin;
+
+        return new Ray(ray_origin, ray_direction);
+    }
+
+    private Vector3D<double> PixelSampleSquare()
+    {
+        // Returns a random point in the square surrounding a pixel at the origin.
+        var px = -0.5 + MathHelper.RandomDouble();
+        var py = -0.5 + MathHelper.RandomDouble();
+
+        return (px * pixel_delta_u) + (py * pixel_delta_v);
+    }
+
     public static Vector3D<double> RayColor(Ray ray, Hittable world)
     {
         if (world.Hit(ray, new Interval(0, double.PositiveInfinity), out HitRecord rec))
@@ -85,9 +112,20 @@ public class Camera
         return (1.0 - a) * Vector3D<double>.One + a * new Vector3D<double>(0.5, 0.7, 1.0);
     }
 
-    private static void WriteColor(StreamWriter streamWriter, Vector3D<double> pixelColor)
+    private static void WriteColor(StreamWriter streamWriter, Vector3D<double> pixelColor, int samples_per_pixel)
     {
+        double r = pixelColor.X;
+        double g = pixelColor.Y;
+        double b = pixelColor.Z;
+
+        // Divide the color by the number of samples.
+        double scale = 1.0 / samples_per_pixel;
+        r *= scale;
+        g *= scale;
+        b *= scale;
+
         // Write the translated [0,255] value of each color component.
-        streamWriter.WriteLine($"{(int)(255.999f * pixelColor.X)} {(int)(255.999f * pixelColor.Y)} {(int)(255.999f * pixelColor.Z)}");
+        Interval interval = new(0.0, 0.999);
+        streamWriter.WriteLine($"{(int)(255.999f * interval.Clamp(r))} {(int)(255.999f * interval.Clamp(g))} {(int)(255.999f * interval.Clamp(b))}");
     }
 }

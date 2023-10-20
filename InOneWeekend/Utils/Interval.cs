@@ -25,4 +25,6 @@ public class Interval
     public bool Contains(double value) => Min <= value && value <= Max;
 
     public bool Surrounds(double value) => Min < value && value < Max;
+
+    public double Clamp(double value) => Math.Clamp(value, Min, Max);
 }
