@@ -10,6 +10,7 @@ public class Camera
     private int image_width = 100;
     private int image_height;
     private int samples_per_pixel = 10;
+    private int max_depth = 10;
     private Vector3D<double> center;
     private Vector3D<double> pixel00_loc;
     private Vector3D<double> pixel_delta_u;
@@ -20,6 +21,8 @@ public class Camera
     public int ImageWidth { get => image_width; set => image_width = value; }
 
     public int Samples { get => samples_per_pixel; set => samples_per_pixel = value; }
+
+    public int MaxDepth { get => max_depth; set => max_depth = value; }
 
     public void Render(Hittable world)
     {
@@ -43,7 +46,7 @@ public class Camera
                 {
                     Ray r = GetRay(i, j);
 
-                    pixel_color += RayColor(r, world);
+                    pixel_color += RayColor(r, max_depth, world);
                 }
 
                 WriteColor(streamWriter, pixel_color, samples_per_pixel);
@@ -99,11 +102,19 @@ public class Camera
         return (px * pixel_delta_u) + (py * pixel_delta_v);
     }
 
-    public static Vector3D<double> RayColor(Ray ray, Hittable world)
+    public static Vector3D<double> RayColor(Ray ray, int depth, Hittable world)
     {
-        if (world.Hit(ray, new Interval(0, double.PositiveInfinity), out HitRecord rec))
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth <= 0)
         {
-            return 0.5 * (rec.Normal + Vector3D<double>.One);
+            return Vector3D<double>.Zero;
+        }
+
+        if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), out HitRecord rec))
+        {
+            Vector3D<double> direction = MathHelper.RandomOnHemisphere(rec.Normal);
+
+            return 0.5 * RayColor(new Ray(rec.P, direction), depth - 1, world);
         }
 
         Vector3D<double> unit_direction = Vector3D.Normalize(ray.Direction);
