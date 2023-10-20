@@ -16,7 +16,7 @@ public class Sphere : Hittable
         Radius = radius;
     }
 
-    public override bool Hit(Ray ray, double ray_tmin, double ray_tmax, out HitRecord hit_record)
+    public override bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record)
     {
         hit_record = new HitRecord();
 
@@ -35,11 +35,11 @@ public class Sphere : Hittable
 
         // Find the nearest root that lies in the acceptable range.
         double root = (h - sqrtd) / a;
-        if (root <= ray_tmin || ray_tmax <= root)
+        if (!ray_t.Surrounds(root))
         {
             root = (h + sqrtd) / a;
 
-            if (root <= ray_tmin || ray_tmax <= root)
+            if (!ray_t.Surrounds(root))
             {
                 return false;
             }

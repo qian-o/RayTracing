@@ -4,5 +4,5 @@ namespace InOneWeekend.Contracts.Models;
 
 public abstract class Hittable
 {
-    public abstract bool Hit(Ray ray, double ray_tmin, double ray_tmax, out HitRecord hit_record);
+    public abstract bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record);
 }

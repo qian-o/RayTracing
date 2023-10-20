@@ -22,16 +22,16 @@ public class HittableList : Hittable
         Objects.Clear();
     }
 
-    public override bool Hit(Ray ray, double ray_tmin, double ray_tmax, out HitRecord hit_record)
+    public override bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record)
     {
         hit_record = new HitRecord();
 
         bool hit_anything = false;
-        double closest_so_far = ray_tmax;
+        double closest_so_far = ray_t.Max;
 
         foreach (Hittable hittable in Objects)
         {
-            if (hittable.Hit(ray, ray_tmin, closest_so_far, out HitRecord temp_rec))
+            if (hittable.Hit(ray, new Interval(ray_t.Min, closest_so_far), out HitRecord temp_rec))
             {
                 hit_anything = true;
                 closest_so_far = temp_rec.T;

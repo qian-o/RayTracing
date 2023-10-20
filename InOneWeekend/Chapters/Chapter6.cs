@@ -70,7 +70,7 @@ public class Chapter6 : IChapter
 
     private static Vector3D<double> RayColor(Ray ray, Hittable world)
     {
-        if (world.Hit(ray, 0, double.PositiveInfinity, out HitRecord rec))
+        if (world.Hit(ray, new Interval(0, double.PositiveInfinity), out HitRecord rec))
         {
             return 0.5 * (rec.Normal + Vector3D<double>.One);
         }
