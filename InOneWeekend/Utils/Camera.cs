@@ -15,6 +15,8 @@ public class Camera
     private Vector3D<double> lookfrom = new(0.0, 0.0, -1.0);
     private Vector3D<double> lookat = new(0.0, 0.0, 0.0);
     private Vector3D<double> up = new(0.0, 1.0, 0.0);
+    private double defocus_angle = 0.0;
+    private double focus_dist = 10.0;
     private Vector3D<double> center;
     private Vector3D<double> pixel00_loc;
     private Vector3D<double> pixel_delta_u;
@@ -22,6 +24,8 @@ public class Camera
     private Vector3D<double> u;
     private Vector3D<double> v;
     private Vector3D<double> w;
+    private Vector3D<double> defocus_disk_u;
+    private Vector3D<double> defocus_disk_v;
 
     public double AspectRatio { get => aspect_ratio; set => aspect_ratio = value; }
 
@@ -38,6 +42,10 @@ public class Camera
     public Vector3D<double> LookAt { get => lookat; set => lookat = value; }
 
     public Vector3D<double> Up { get => up; set => up = value; }
+
+    public double DefocusAngle { get => defocus_angle; set => defocus_angle = value; }
+
+    public double FocusDist { get => focus_dist; set => focus_dist = value; }
 
     public void Render(Hittable world)
     {
@@ -79,10 +87,9 @@ public class Camera
         center = lookfrom;
 
         // Determine viewport dimensions.
-        double focal_length = (lookfrom - lookat).Length;
         double theta = MathHelper.DegreesToRadians(fov);
         double h = Math.Tan(theta / 2.0);
-        double viewport_height = 2.0 * h * focal_length;
+        double viewport_height = 2.0 * h * focus_dist;
         double viewport_width = viewport_height * ((double)image_width / image_height);
 
         w = Vector3D.Normalize(lookfrom - lookat);
@@ -98,8 +105,13 @@ public class Camera
         pixel_delta_v = viewport_v / image_height;
 
         // Calculate the location of the upper left pixel.
-        Vector3D<double> viewport_upper_left = center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
+        Vector3D<double> viewport_upper_left = center - (focus_dist * w) - viewport_u / 2 - viewport_v / 2;
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+        // Calculate the defocus disk vectors.
+        double defocus_radius = focus_dist * Math.Tan(MathHelper.DegreesToRadians(defocus_angle) / 2.0);
+        defocus_disk_u = u * defocus_radius;
+        defocus_disk_v = v * defocus_radius;
     }
 
     private Ray GetRay(int i, int j)
@@ -108,7 +120,7 @@ public class Camera
         Vector3D<double> pixel_center = pixel00_loc + (j * pixel_delta_u) + (i * pixel_delta_v);
         Vector3D<double> pixel_sample = pixel_center + PixelSampleSquare();
 
-        Vector3D<double> ray_origin = center;
+        Vector3D<double> ray_origin = defocus_angle <= 0.0 ? center : DefocusDiskSample();
         Vector3D<double> ray_direction = pixel_sample - ray_origin;
 
         return new Ray(ray_origin, ray_direction);
@@ -121,6 +133,13 @@ public class Camera
         var py = -0.5 + MathHelper.RandomDouble();
 
         return (px * pixel_delta_u) + (py * pixel_delta_v);
+    }
+
+    private Vector3D<double> DefocusDiskSample()
+    {
+        Vector3D<double> p = MathHelper.RandomInUnitDisk();
+
+        return center + (p.X * defocus_disk_u) + (p.Y * defocus_disk_v);
     }
 
     public static Vector3D<double> RayColor(Ray ray, int depth, Hittable world)

@@ -55,6 +55,18 @@ public static class MathHelper
         return Vector3D.Dot(on_unit_sphere, normal) > 0.0 ? on_unit_sphere : -on_unit_sphere;
     }
 
+    public static Vector3D<double> RandomInUnitDisk()
+    {
+        while (true)
+        {
+            Vector3D<double> p = new(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
+            if (p.LengthSquared < 1)
+            {
+                return p;
+            }
+        }
+    }
+
     public static bool NearZero(this Vector3D<double> vector)
     {
         const double s = 1e-8;

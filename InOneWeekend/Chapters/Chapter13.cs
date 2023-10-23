@@ -6,7 +6,7 @@ using Silk.NET.Maths;
 
 namespace InOneWeekend.Chapters;
 
-public class Chapter12 : IChapter
+public class Chapter13 : IChapter
 {
     public void Run()
     {
@@ -31,7 +31,9 @@ public class Chapter12 : IChapter
             Fov = 20.0,
             LookFrom = new Vector3D<double>(-2.0, 2.0, 1.0),
             LookAt = new Vector3D<double>(0.0, 0.0, -1.0),
-            Up = new Vector3D<double>(0.0, 1.0, 0.0)
+            Up = new Vector3D<double>(0.0, 1.0, 0.0),
+            DefocusAngle = 10.0,
+            FocusDist = 3.4
         };
 
         camera.Render(world);
