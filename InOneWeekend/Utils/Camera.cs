@@ -11,10 +11,17 @@ public class Camera
     private int image_height;
     private int samples_per_pixel = 10;
     private int max_depth = 10;
+    private double fov = 90.0;
+    private Vector3D<double> lookfrom = new(0.0, 0.0, -1.0);
+    private Vector3D<double> lookat = new(0.0, 0.0, 0.0);
+    private Vector3D<double> up = new(0.0, 1.0, 0.0);
     private Vector3D<double> center;
     private Vector3D<double> pixel00_loc;
     private Vector3D<double> pixel_delta_u;
     private Vector3D<double> pixel_delta_v;
+    private Vector3D<double> u;
+    private Vector3D<double> v;
+    private Vector3D<double> w;
 
     public double AspectRatio { get => aspect_ratio; set => aspect_ratio = value; }
 
@@ -23,6 +30,14 @@ public class Camera
     public int Samples { get => samples_per_pixel; set => samples_per_pixel = value; }
 
     public int MaxDepth { get => max_depth; set => max_depth = value; }
+
+    public double Fov { get => fov; set => fov = value; }
+
+    public Vector3D<double> LookFrom { get => lookfrom; set => lookfrom = value; }
+
+    public Vector3D<double> LookAt { get => lookat; set => lookat = value; }
+
+    public Vector3D<double> Up { get => up; set => up = value; }
 
     public void Render(Hittable world)
     {
@@ -61,23 +76,29 @@ public class Camera
         image_height = (int)(image_width / aspect_ratio);
         image_height = image_height < 1 ? 1 : image_height;
 
-        center = Vector3D<double>.Zero;
+        center = lookfrom;
 
         // Determine viewport dimensions.
-        double focal_length = 1.0;
-        double viewport_height = 2.0;
+        double focal_length = (lookfrom - lookat).Length;
+        double theta = MathHelper.DegreesToRadians(fov);
+        double h = Math.Tan(theta / 2.0);
+        double viewport_height = 2.0 * h * focal_length;
         double viewport_width = viewport_height * ((double)image_width / image_height);
 
+        w = Vector3D.Normalize(lookfrom - lookat);
+        u = Vector3D.Normalize(Vector3D.Cross(up, w));
+        v = Vector3D.Cross(w, u);
+
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
-        Vector3D<double> viewport_u = new(viewport_width, 0.0, 0.0);
-        Vector3D<double> viewport_v = new(0.0, -viewport_height, 0.0);
+        Vector3D<double> viewport_u = viewport_width * u;
+        Vector3D<double> viewport_v = viewport_height * -v;
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         pixel_delta_u = viewport_u / image_width;
         pixel_delta_v = viewport_v / image_height;
 
         // Calculate the location of the upper left pixel.
-        Vector3D<double> viewport_upper_left = center - new Vector3D<double>(0.0, 0.0, focal_length) - viewport_u / 2 - viewport_v / 2;
+        Vector3D<double> viewport_upper_left = center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
     }
 
