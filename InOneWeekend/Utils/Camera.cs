@@ -112,9 +112,9 @@ public class Camera
 
         if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), out HitRecord rec))
         {
-            Vector3D<double> direction = rec.Normal + MathHelper.RandomUnitVector();
-
-            return 0.5 * RayColor(new Ray(rec.P, direction), depth - 1, world);
+            return rec.Mat!.Scatter(ray, rec,out Vector3D<double> attenuation, out Ray scattered)
+                ? attenuation * RayColor(scattered, depth - 1, world)
+                : Vector3D<double>.Zero;
         }
 
         Vector3D<double> unit_direction = Vector3D.Normalize(ray.Direction);

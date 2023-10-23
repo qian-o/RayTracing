@@ -2,7 +2,7 @@
 
 namespace InOneWeekend.Helpers;
 
-public class MathHelper
+public static class MathHelper
 {
     private static readonly Random _random = new();
 
@@ -53,5 +53,16 @@ public class MathHelper
         Vector3D<double> on_unit_sphere = RandomUnitVector();
 
         return Vector3D.Dot(on_unit_sphere, normal) > 0.0 ? on_unit_sphere : -on_unit_sphere;
+    }
+
+    public static bool NearZero(this Vector3D<double> vector)
+    {
+        const double s = 1e-8;
+        return Math.Abs(vector.X) < s && Math.Abs(vector.Y) < s && Math.Abs(vector.Z) < s;
+    }
+
+    public static Vector3D<double> Reflect(Vector3D<double> vector, Vector3D<double> normal)
+    {
+        return vector - 2 * Vector3D.Dot(vector, normal) * normal;
     }
 }

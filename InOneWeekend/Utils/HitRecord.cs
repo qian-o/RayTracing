@@ -1,4 +1,5 @@
-﻿using Silk.NET.Maths;
+﻿using InOneWeekend.Contracts.Materials;
+using Silk.NET.Maths;
 
 namespace InOneWeekend.Utils;
 
@@ -7,6 +8,8 @@ public class HitRecord
     public Vector3D<double> P { get; set; }
 
     public Vector3D<double> Normal { get; set; }
+
+    public Material? Mat { get; set; }
 
     public double T { get; set; }
 

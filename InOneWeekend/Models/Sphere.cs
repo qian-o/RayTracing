@@ -1,4 +1,5 @@
-﻿using InOneWeekend.Contracts.Models;
+﻿using InOneWeekend.Contracts.Materials;
+using InOneWeekend.Contracts.Models;
 using InOneWeekend.Utils;
 using Silk.NET.Maths;
 
@@ -10,10 +11,13 @@ public class Sphere : Hittable
 
     public double Radius { get; }
 
-    public Sphere(Vector3D<double> center, double radius)
+    public Material Mat { get; }
+
+    public Sphere(Vector3D<double> center, double radius, Material mat)
     {
         Center = center;
         Radius = radius;
+        Mat = mat;
     }
 
     public override bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record)
@@ -49,6 +53,7 @@ public class Sphere : Hittable
         hit_record.P = ray.At(hit_record.T);
         Vector3D<double> outward_normal = (hit_record.P - Center) / Radius;
         hit_record.SetFaceNormal(ray, outward_normal);
+        hit_record.Mat = Mat;
 
         return true;
     }
