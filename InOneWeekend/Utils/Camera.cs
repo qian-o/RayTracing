@@ -51,16 +51,14 @@ public class Camera
     {
         Initialize();
 
-        using FileStream fileStream = File.Create("image.ppm");
-        using StreamWriter streamWriter = new(fileStream);
+        int scheduled = 0;
+        Vector3D<double>[] pixelColors = new Vector3D<double>[image_width * image_height];
 
-        streamWriter.WriteLine("P3");
-        streamWriter.WriteLine($"{image_width} {image_height}");
-        streamWriter.WriteLine("255");
-
-        for (int i = 0; i < image_height; i++)
+        Parallel.For(0, image_height, (i) =>
         {
-            Console.WriteLine($"Scanlines remaining: {image_height - i}");
+            Interlocked.Increment(ref scheduled);
+
+            Console.WriteLine($"Scanlines remaining {image_height - scheduled}.");
 
             for (int j = 0; j < image_width; j++)
             {
@@ -72,8 +70,22 @@ public class Camera
                     pixel_color += RayColor(r, max_depth, world);
                 }
 
-                WriteColor(streamWriter, pixel_color, samples_per_pixel);
+                pixelColors[i * image_width + j] = pixel_color;
             }
+        });
+
+        using FileStream fileStream = File.Create("image.ppm");
+        using StreamWriter streamWriter = new(fileStream);
+
+        streamWriter.WriteLine("P3");
+        streamWriter.WriteLine($"{image_width} {image_height}");
+        streamWriter.WriteLine("255");
+
+        for (int i = 0; i < pixelColors.Length; i++)
+        {
+            Console.WriteLine($"Writing pixel {i} of {pixelColors.Length - 1}.");
+
+            WriteColor(streamWriter, pixelColors[i], samples_per_pixel);
         }
 
         Console.WriteLine("Done.");
