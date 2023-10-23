@@ -61,8 +61,12 @@ public static class MathHelper
         return Math.Abs(vector.X) < s && Math.Abs(vector.Y) < s && Math.Abs(vector.Z) < s;
     }
 
-    public static Vector3D<double> Reflect(Vector3D<double> vector, Vector3D<double> normal)
+    public static Vector3D<double> Refract(Vector3D<double> uv, Vector3D<double> normal, double etai_over_etat)
     {
-        return vector - 2 * Vector3D.Dot(vector, normal) * normal;
+        double cos_theta = Math.Min(Vector3D.Dot(-uv, normal), 1.0);
+        Vector3D<double> r_out_perp = etai_over_etat * (uv + cos_theta * normal);
+        Vector3D<double> r_out_parallel = -Math.Sqrt(Math.Abs(1.0 - r_out_perp.LengthSquared)) * normal;
+
+        return r_out_perp + r_out_parallel;
     }
 }
