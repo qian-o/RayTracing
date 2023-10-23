@@ -10,11 +10,9 @@ public class Chapter7 : IChapter
 {
     public void Run()
     {
-        Lambertian material_center = new(new Vector3D<double>(0.7, 0.3, 0.3));
-
         HittableList world = new();
-        world.Add(new Sphere(new Vector3D<double>(0.0, 0.0, -1.0), 0.5, material_center));
-        world.Add(new Sphere(new Vector3D<double>(0.0, -100.5, -1.0), 100, material_center));
+        world.Add(new Sphere(new Vector3D<double>(0.0, 0.0, -1.0), 0.5, Lambertian.Identity));
+        world.Add(new Sphere(new Vector3D<double>(0.0, -100.5, -1.0), 100, Lambertian.Identity));
 
         Camera camera = new()
         {

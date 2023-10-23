@@ -11,8 +11,6 @@ public class Chapter6 : IChapter
 {
     public void Run()
     {
-        Lambertian material_center = new(new Vector3D<double>(0.7, 0.3, 0.3));
-
         // Image
         const double aspect_ratio = 16.0 / 9.0;
         const int image_width = 400;
@@ -23,8 +21,8 @@ public class Chapter6 : IChapter
 
         // World
         HittableList world = new();
-        world.Add(new Sphere(new Vector3D<double>(0.0, 0.0, -1.0), 0.5, material_center));
-        world.Add(new Sphere(new Vector3D<double>(0.0, -100.5, -1.0), 100, material_center));
+        world.Add(new Sphere(new Vector3D<double>(0.0, 0.0, -1.0), 0.5, Lambertian.Identity));
+        world.Add(new Sphere(new Vector3D<double>(0.0, -100.5, -1.0), 100, Lambertian.Identity));
 
         // Camera
         double focal_length = 1.0;

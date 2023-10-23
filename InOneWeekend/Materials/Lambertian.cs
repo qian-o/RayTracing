@@ -7,6 +7,8 @@ namespace InOneWeekend.Materials;
 
 public class Lambertian : Material
 {
+    public static Lambertian Identity { get; } = new(new Vector3D<double>(0.5, 0.5, 0.5));
+
     private readonly Vector3D<double> _albedo;
 
     public Lambertian(Vector3D<double> albedo)
