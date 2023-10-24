@@ -4,13 +4,18 @@ namespace TheNextWeek.Utils;
 
 public class AABB
 {
-    public static AABB Empty => new(Interval.Empty, Interval.Empty, Interval.Empty);
-
     public Interval X { get; private set; }
 
     public Interval Y { get; private set; }
 
     public Interval Z { get; private set; }
+
+    public AABB()
+    {
+        X = new Interval();
+        Y = new Interval();
+        Z = new Interval();
+    }
 
     public AABB(Interval ix, Interval iy, Interval iz)
     {

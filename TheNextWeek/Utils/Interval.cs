@@ -2,17 +2,13 @@
 
 public class Interval
 {
-    public static Interval Empty => new(double.PositiveInfinity, double.NegativeInfinity);
-
-    public static Interval UnIverse => new(double.NegativeInfinity, double.PositiveInfinity);
-
     public double Min { get; set; }
 
     public double Max { get; set; }
 
     public double Size => Max - Min;
 
-    public Interval() : this(-double.NegativeInfinity, double.PositiveInfinity)
+    public Interval() : this(double.PositiveInfinity, double.NegativeInfinity)
     {
     }
 

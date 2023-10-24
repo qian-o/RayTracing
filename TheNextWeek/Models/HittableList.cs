@@ -5,7 +5,7 @@ namespace TheNextWeek.Models;
 
 public class HittableList : Hittable
 {
-    private AABB bbox = AABB.Empty;
+    private AABB bbox = new();
 
     public List<Hittable> Objects { get; }
 
