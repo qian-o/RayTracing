@@ -10,13 +10,13 @@ public class BvhNode : Hittable
     private readonly Hittable _right;
     private readonly AABB _bbox;
 
-    public BvhNode(HittableList list) : this(list.Objects.ToArray(), 0, list.Objects.Count)
+    public BvhNode(HittableList list) : this(list.Objects, 0, list.Objects.Count)
     {
     }
 
-    public BvhNode(Hittable[] src_objects, int start, int end)
+    public BvhNode(List<Hittable> src_objects, int start, int end)
     {
-        Hittable[] objects = src_objects;
+        List<Hittable> objects = new(src_objects);
 
         int axis = MathHelper.RandomInt(0, 2);
 
@@ -35,7 +35,7 @@ public class BvhNode : Hittable
         }
         else if (object_span == 2)
         {
-            if (comparator(objects[start], objects[start + 1]) < 0)
+            if (comparator(objects[start], objects[start + 1]) == -1)
             {
                 _left = objects[start];
                 _right = objects[start + 1];
@@ -50,7 +50,7 @@ public class BvhNode : Hittable
         {
             BoxComparer boxComparer = new(comparator);
 
-            Array.Sort(objects, start, object_span, boxComparer);
+            objects.Sort(start, object_span, boxComparer);
 
             int mid = start + object_span / 2;
 

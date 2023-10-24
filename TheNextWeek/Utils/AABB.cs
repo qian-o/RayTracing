@@ -23,7 +23,7 @@ public class AABB
 
     public AABB(Vector3D<double> a, Vector3D<double> b)
     {
-        X = new Interval(Math.Min(a.X,b.X), Math.Max(a.X, b.X));
+        X = new Interval(Math.Min(a.X, b.X), Math.Max(a.X, b.X));
         Y = new Interval(Math.Min(a.Y, b.Y), Math.Max(a.Y, b.Y));
         Z = new Interval(Math.Min(a.Z, b.Z), Math.Max(a.Z, b.Z));
 
