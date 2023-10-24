@@ -1,6 +1,6 @@
-﻿using TheNextWeek.Contracts.Models;
+﻿using Silk.NET.Maths;
+using TheNextWeek.Contracts.Models;
 using TheNextWeek.Helpers;
-using Silk.NET.Maths;
 
 namespace TheNextWeek.Utils;
 

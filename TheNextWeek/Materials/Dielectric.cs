@@ -1,7 +1,7 @@
-﻿using TheNextWeek.Contracts.Materials;
+﻿using Silk.NET.Maths;
+using TheNextWeek.Contracts.Materials;
 using TheNextWeek.Helpers;
 using TheNextWeek.Utils;
-using Silk.NET.Maths;
 
 namespace TheNextWeek.Materials;
 
