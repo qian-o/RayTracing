@@ -12,28 +12,34 @@ public class Sphere : Hittable
     private readonly Material _mat;
     private readonly bool _isMoving;
     private readonly Vector3D<double> _centerVec;
+    private readonly AABB _bbox;
 
     public Sphere(Vector3D<double> center, double radius, Material mat)
     {
+        Vector3D<double> rvec = new(radius, radius, radius);
+
         _center = center;
         _radius = radius;
         _mat = mat;
         _isMoving = false;
+        _centerVec = Vector3D<double>.Zero;
+        _bbox = new AABB(center - rvec, center + rvec);
     }
 
     public Sphere(Vector3D<double> center1, Vector3D<double> center2, double radius, Material mat)
     {
+        Vector3D<double> rvec = new(radius, radius, radius);
+
         _center = center1;
-        _centerVec = center2 - center1;
         _radius = radius;
         _mat = mat;
         _isMoving = true;
+        _centerVec = center2 - center1;
+        _bbox = new AABB(new AABB(center1 - rvec, center1 + rvec), new AABB(center2 - rvec, center2 + rvec));
     }
 
-    public override bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record)
+    public override bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record)
     {
-        hit_record = new HitRecord();
-
         Vector3D<double> center = _isMoving ? Center(ray.Time) : _center;
         Vector3D<double> oc = center - ray.Origin;
         double a = ray.Direction.LengthSquared;
@@ -67,6 +73,11 @@ public class Sphere : Hittable
         hit_record.Mat = _mat;
 
         return true;
+    }
+
+    public override AABB BoundingBox()
+    {
+        return _bbox;
     }
 
     private Vector3D<double> Center(double time)

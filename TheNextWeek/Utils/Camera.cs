@@ -151,7 +151,8 @@ public class Camera
             return Vector3D<double>.Zero;
         }
 
-        if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), out HitRecord rec))
+        HitRecord rec = new();
+        if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), ref rec))
         {
             return rec.Mat!.Scatter(ray, rec, out Vector3D<double> attenuation, out Ray scattered)
                 ? attenuation * RayColor(scattered, depth - 1, world)

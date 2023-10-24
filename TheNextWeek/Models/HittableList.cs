@@ -5,6 +5,8 @@ namespace TheNextWeek.Models;
 
 public class HittableList : Hittable
 {
+    private AABB bbox = AABB.Empty;
+
     public List<Hittable> Objects { get; }
 
     public HittableList()
@@ -12,9 +14,16 @@ public class HittableList : Hittable
         Objects = new List<Hittable>();
     }
 
+    public HittableList(Hittable hittable) : this()
+    {
+        Add(hittable);
+    }
+
     public void Add(Hittable hittable)
     {
         Objects.Add(hittable);
+
+        bbox = new AABB(bbox, hittable.BoundingBox());
     }
 
     public void Clear()
@@ -22,16 +31,15 @@ public class HittableList : Hittable
         Objects.Clear();
     }
 
-    public override bool Hit(Ray ray, Interval ray_t, out HitRecord hit_record)
+    public override bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record)
     {
-        hit_record = new HitRecord();
-
+        HitRecord temp_rec = new();
         bool hit_anything = false;
         double closest_so_far = ray_t.Max;
 
         foreach (Hittable hittable in Objects)
         {
-            if (hittable.Hit(ray, new Interval(ray_t.Min, closest_so_far), out HitRecord temp_rec))
+            if (hittable.Hit(ray, new Interval(ray_t.Min, closest_so_far), ref temp_rec))
             {
                 hit_anything = true;
                 closest_so_far = temp_rec.T;
@@ -40,5 +48,10 @@ public class HittableList : Hittable
         }
 
         return hit_anything;
+    }
+
+    public override AABB BoundingBox()
+    {
+        return bbox;
     }
 }

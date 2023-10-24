@@ -21,6 +21,11 @@ public static class MathHelper
         return min + (max - min) * _random.NextDouble();
     }
 
+    public static int RandomInt(int min, int max)
+    {
+        return (int)RandomDouble(min, max + 1);
+    }
+
     public static Vector3D<double> Random()
     {
         return new Vector3D<double>(RandomDouble(), RandomDouble(), RandomDouble());

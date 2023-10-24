@@ -22,9 +22,22 @@ public class Interval
         Max = max;
     }
 
+    public Interval(Interval a, Interval b)
+    {
+        Min = Math.Min(a.Min, b.Min);
+        Max = Math.Max(a.Max, b.Max);
+    }
+
     public bool Contains(double value) => Min <= value && value <= Max;
 
     public bool Surrounds(double value) => Min < value && value < Max;
 
     public double Clamp(double value) => Math.Clamp(value, Min, Max);
+
+    public Interval Expand(double delta)
+    {
+        double padding = delta / 2.0;
+
+        return new Interval(Min - padding, Max + padding);
+    }
 }
