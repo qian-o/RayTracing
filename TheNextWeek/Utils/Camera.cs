@@ -122,8 +122,9 @@ public class Camera
 
         Vector3D<double> ray_origin = defocus_angle <= 0.0 ? center : DefocusDiskSample();
         Vector3D<double> ray_direction = pixel_sample - ray_origin;
+        double ray_time = MathHelper.RandomDouble();
 
-        return new Ray(ray_origin, ray_direction);
+        return new Ray(ray_origin, ray_direction, ray_time);
     }
 
     private Vector3D<double> PixelSampleSquare()

@@ -4,9 +4,9 @@ namespace InOneWeekend.Utils;
 
 public class Ray
 {
-    public Vector3D<double> Origin { get; set; }
+    public Vector3D<double> Origin { get; }
 
-    public Vector3D<double> Direction { get; set; }
+    public Vector3D<double> Direction { get; }
 
     public Ray()
     {

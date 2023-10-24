@@ -36,7 +36,7 @@ public class Dielectric : Material
             direction = MathHelper.Refract(unitDirection, hitRecord.Normal, refractionRatio);
         }
 
-        scattered = new Ray(hitRecord.P, direction);
+        scattered = new Ray(hitRecord.P, direction, rayIn.Time);
 
         return true;
     }
