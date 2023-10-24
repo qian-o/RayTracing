@@ -1,21 +1,12 @@
-﻿using TheNextWeek.Contracts.Chapters;
+﻿using TheNextWeek.Chapters;
+using TheNextWeek.Contracts.Chapters;
 
-namespace TheNextWeek;
+DateTime beginTime = DateTime.Now;
 
-internal class Program
-{
-    static void Main(string[] args)
-    {
-        _ = args;
+IChapter chapter = new Chapter2();
 
-        DateTime beginTime = DateTime.Now;
+chapter.Run();
 
-        IChapter chapter = null;
+Console.WriteLine($"Total time: {DateTime.Now - beginTime}");
 
-        chapter.Run();
-
-        Console.WriteLine($"Total time: {DateTime.Now - beginTime}");
-
-        Console.ReadKey();
-    }
-}
+Console.ReadKey();

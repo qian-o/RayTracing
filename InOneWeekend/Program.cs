@@ -1,22 +1,12 @@
 ﻿using InOneWeekend.Chapters;
 using InOneWeekend.Contracts.Chapters;
 
-namespace InOneWeekend;
+DateTime beginTime = DateTime.Now;
 
-internal class Program
-{
-    static void Main(string[] args)
-    {
-        _ = args;
+IChapter chapter = new Chapter14();
 
-        DateTime beginTime = DateTime.Now;
+chapter.Run();
 
-        IChapter chapter = new Chapter14();
+Console.WriteLine($"Total time: {DateTime.Now - beginTime}");
 
-        chapter.Run();
-
-        Console.WriteLine($"Total time: {DateTime.Now - beginTime}");
-
-        Console.ReadKey();
-    }
-}
+Console.ReadKey();
