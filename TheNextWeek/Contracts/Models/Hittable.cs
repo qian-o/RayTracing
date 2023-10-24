@@ -4,7 +4,7 @@ namespace TheNextWeek.Contracts.Models;
 
 public abstract class Hittable
 {
-    public abstract bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record);
+    public AABB BoundingBox { get; set; }
 
-    public abstract AABB BoundingBox();
+    public abstract bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record);
 }

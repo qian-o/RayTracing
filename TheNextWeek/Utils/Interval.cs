@@ -1,16 +1,12 @@
 ﻿namespace TheNextWeek.Utils;
 
-public class Interval
+public struct Interval
 {
-    public double Min { get; set; }
+    public double Min;
 
-    public double Max { get; set; }
+    public double Max;
 
-    public double Size => Max - Min;
-
-    public Interval() : this(double.PositiveInfinity, double.NegativeInfinity)
-    {
-    }
+    public readonly double Size => Max - Min;
 
     public Interval(double min, double max)
     {
@@ -24,13 +20,13 @@ public class Interval
         Max = Math.Max(a.Max, b.Max);
     }
 
-    public bool Contains(double value) => Min <= value && value <= Max;
+    public readonly bool Contains(double value) => Min <= value && value <= Max;
 
-    public bool Surrounds(double value) => Min < value && value < Max;
+    public readonly bool Surrounds(double value) => Min < value && value < Max;
 
-    public double Clamp(double value) => Math.Clamp(value, Min, Max);
+    public readonly double Clamp(double value) => Math.Clamp(value, Min, Max);
 
-    public Interval Expand(double delta)
+    public readonly Interval Expand(double delta)
     {
         double padding = delta / 2.0;
 

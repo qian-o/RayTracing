@@ -2,19 +2,26 @@
 
 namespace TheNextWeek.Utils;
 
-public class AABB
+public struct AABB
 {
-    public Interval X { get; private set; }
+    public Interval X;
 
-    public Interval Y { get; private set; }
+    public Interval Y;
 
-    public Interval Z { get; private set; }
+    public Interval Z;
 
-    public AABB()
+    public readonly Interval this[int i]
     {
-        X = new Interval();
-        Y = new Interval();
-        Z = new Interval();
+        get
+        {
+            return i switch
+            {
+                0 => X,
+                1 => Y,
+                2 => Z,
+                _ => throw new ArgumentOutOfRangeException(nameof(i))
+            };
+        }
     }
 
     public AABB(Interval ix, Interval iy, Interval iz)
@@ -40,31 +47,18 @@ public class AABB
         X = new Interval(box0.X, box1.X);
         Y = new Interval(box0.Y, box1.Y);
         Z = new Interval(box0.Z, box1.Z);
+
+        PadToMinimums();
     }
 
-    public Interval Axis(int n)
-    {
-        if (n == 1)
-        {
-            return Y;
-        }
-
-        if (n == 2)
-        {
-            return Z;
-        }
-
-        return X;
-    }
-
-    public bool Hit(Ray ray, Interval ray_t)
+    public readonly bool Hit(Ray ray, Interval ray_t)
     {
         for (int a = 0; a < 3; a++)
         {
             double invD = 1.0 / ray.Direction[a];
 
-            double t0 = (Axis(a).Min - ray.Origin[a]) * invD;
-            double t1 = (Axis(a).Max - ray.Origin[a]) * invD;
+            double t0 = (this[a].Min - ray.Origin[a]) * invD;
+            double t1 = (this[a].Max - ray.Origin[a]) * invD;
 
             if (invD < 0.0)
             {

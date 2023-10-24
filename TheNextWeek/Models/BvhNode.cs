@@ -8,7 +8,6 @@ public class BvhNode : Hittable
 {
     private readonly Hittable _left;
     private readonly Hittable _right;
-    private readonly AABB _bbox;
 
     public BvhNode(HittableList list) : this(list.Objects, 0, list.Objects.Count)
     {
@@ -20,13 +19,6 @@ public class BvhNode : Hittable
 
         int axis = MathHelper.RandomInt(0, 2);
 
-        Func<Hittable, Hittable, int> comparator = axis switch
-        {
-            0 => BoxXCompare,
-            1 => BoxYCompare,
-            _ => BoxZCompare
-        };
-
         int object_span = end - start;
 
         if (object_span == 1)
@@ -35,7 +27,7 @@ public class BvhNode : Hittable
         }
         else if (object_span == 2)
         {
-            if (comparator(objects[start], objects[start + 1]) == -1)
+            if (BoxCompare(objects[start], objects[start + 1], axis) == -1)
             {
                 _left = objects[start];
                 _right = objects[start + 1];
@@ -48,9 +40,7 @@ public class BvhNode : Hittable
         }
         else
         {
-            BoxComparer boxComparer = new(comparator);
-
-            objects.Sort(start, object_span, boxComparer);
+            objects.Sort(start, object_span, Comparer<Hittable>.Create((a, b) => BoxCompare(a, b, axis)));
 
             int mid = start + object_span / 2;
 
@@ -58,12 +48,12 @@ public class BvhNode : Hittable
             _right = new BvhNode(objects, mid, end);
         }
 
-        _bbox = new AABB(_left.BoundingBox(), _right.BoundingBox());
+        BoundingBox = new AABB(_left.BoundingBox, _right.BoundingBox);
     }
 
     public override bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record)
     {
-        if (!_bbox.Hit(ray, ray_t))
+        if (!BoundingBox.Hit(ray, ray_t))
         {
             return false;
         }
@@ -74,43 +64,8 @@ public class BvhNode : Hittable
         return hit_left || hit_right;
     }
 
-    public override AABB BoundingBox()
-    {
-        return _bbox;
-    }
-
     private static int BoxCompare(Hittable a, Hittable b, int axis)
     {
-        return a.BoundingBox().Axis(axis).Min.CompareTo(b.BoundingBox().Axis(axis).Min);
-    }
-
-    private static int BoxXCompare(Hittable a, Hittable b)
-    {
-        return BoxCompare(a, b, 0);
-    }
-
-    private static int BoxYCompare(Hittable a, Hittable b)
-    {
-        return BoxCompare(a, b, 1);
-    }
-
-    private static int BoxZCompare(Hittable a, Hittable b)
-    {
-        return BoxCompare(a, b, 2);
-    }
-}
-
-public class BoxComparer : IComparer<Hittable>
-{
-    private readonly Func<Hittable, Hittable, int> _comparator;
-
-    public BoxComparer(Func<Hittable, Hittable, int> comparator)
-    {
-        _comparator = comparator;
-    }
-
-    public int Compare(Hittable? x, Hittable? y)
-    {
-        return _comparator(x!, y!);
+        return a.BoundingBox[axis].Min.CompareTo(b.BoundingBox[axis].Min);
     }
 }

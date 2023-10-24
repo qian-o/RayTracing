@@ -5,8 +5,6 @@ namespace TheNextWeek.Models;
 
 public class HittableList : Hittable
 {
-    private AABB bbox = new();
-
     public List<Hittable> Objects { get; }
 
     public HittableList()
@@ -23,7 +21,7 @@ public class HittableList : Hittable
     {
         Objects.Add(hittable);
 
-        bbox = new AABB(bbox, hittable.BoundingBox());
+        BoundingBox = new AABB(BoundingBox, hittable.BoundingBox);
     }
 
     public void Clear()
@@ -48,10 +46,5 @@ public class HittableList : Hittable
         }
 
         return hit_anything;
-    }
-
-    public override AABB BoundingBox()
-    {
-        return bbox;
     }
 }
