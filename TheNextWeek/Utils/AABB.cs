@@ -23,9 +23,9 @@ public class AABB
 
     public AABB(Vector3D<double> a, Vector3D<double> b)
     {
-        X = new Interval(Math.Min(a.X, b.X), Math.Max(a.X, b.X));
-        Y = new Interval(Math.Min(a.Y, b.Y), Math.Max(a.Y, b.Y));
-        Z = new Interval(Math.Min(a.Z, b.Z), Math.Max(a.Z, b.Z));
+        X = new Interval(Math.Min(a[0], b[0]), Math.Max(a[0], b[0]));
+        Y = new Interval(Math.Min(a[1], b[1]), Math.Max(a[1], b[1]));
+        Z = new Interval(Math.Min(a[2], b[2]), Math.Max(a[2], b[2]));
 
         PadToMinimums();
     }
@@ -54,12 +54,12 @@ public class AABB
 
     public bool Hit(Ray ray, Interval ray_t)
     {
-        for (int i = 0; i < 3; i++)
+        for (int a = 0; a < 3; a++)
         {
-            double invD = 1.0 / ray.Direction[i];
+            double invD = 1.0 / ray.Direction[a];
 
-            double t0 = (Axis(i).Min - ray.Origin[i]) * invD;
-            double t1 = (Axis(i).Max - ray.Origin[i]) * invD;
+            double t0 = (Axis(a).Min - ray.Origin[a]) * invD;
+            double t1 = (Axis(a).Max - ray.Origin[a]) * invD;
 
             if (invD < 0.0)
             {
