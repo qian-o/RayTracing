@@ -1,5 +1,4 @@
 ﻿using TheNextWeek.Contracts.Models;
-using TheNextWeek.Helpers;
 using TheNextWeek.Utils;
 
 namespace TheNextWeek.Models;
@@ -15,9 +14,15 @@ public class BvhNode : Hittable
 
     public BvhNode(List<Hittable> src_objects, int start, int end)
     {
-        List<Hittable> objects = new(src_objects);
+        BoundingBox = AABB.Empty;
+        for (int i = start; i < end; i++)
+        {
+            BoundingBox = new AABB(BoundingBox, src_objects[i].BoundingBox);
+        }
 
-        int axis = MathHelper.RandomInt(0, 2);
+        int axis = BoundingBox.LongestAxis();
+
+        List<Hittable> objects = new(src_objects);
 
         int object_span = end - start;
 
@@ -47,8 +52,6 @@ public class BvhNode : Hittable
             _left = new BvhNode(objects, start, mid);
             _right = new BvhNode(objects, mid, end);
         }
-
-        BoundingBox = new AABB(_left.BoundingBox, _right.BoundingBox);
     }
 
     public override bool Hit(Ray ray, Interval ray_t, ref HitRecord hit_record)

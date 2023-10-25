@@ -2,6 +2,10 @@
 
 public struct Interval
 {
+    public static readonly Interval Empty = new(double.PositiveInfinity, double.NegativeInfinity);
+
+    public static readonly Interval Infinite = new(double.NegativeInfinity, double.PositiveInfinity);
+
     public double Min;
 
     public double Max;

@@ -4,6 +4,10 @@ namespace TheNextWeek.Utils;
 
 public struct AABB
 {
+    public static readonly AABB Empty = new(Interval.Empty, Interval.Empty, Interval.Empty);
+
+    public static readonly AABB Infinite = new(Interval.Infinite, Interval.Infinite, Interval.Infinite);
+
     public Interval X;
 
     public Interval Y;
@@ -75,6 +79,18 @@ public struct AABB
         }
 
         return true;
+    }
+
+    public readonly int LongestAxis()
+    {
+        if (X.Size > Y.Size)
+        {
+            return X.Size > Z.Size ? 0 : 2;
+        }
+        else
+        {
+            return Y.Size > Z.Size ? 1 : 2;
+        }
     }
 
     private void PadToMinimums()
