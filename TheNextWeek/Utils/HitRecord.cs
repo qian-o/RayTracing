@@ -13,6 +13,10 @@ public class HitRecord
 
     public double T { get; set; }
 
+    public double U { get; set; }
+
+    public double V { get; set; }
+
     public bool FrontFace { get; set; }
 
     public void SetFaceNormal(Ray ray, Vector3D<double> outward_normal)
