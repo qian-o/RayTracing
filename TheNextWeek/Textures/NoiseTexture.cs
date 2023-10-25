@@ -23,6 +23,8 @@ public class NoiseTexture : Texture
 
     public override Vector3D<double> Value(double u, double v, Vector3D<double> point)
     {
-        return Vector3D<double>.One * _noise.Noise(point * _scale);
+        Vector3D<double> s = point * _scale;
+
+        return Vector3D<double>.One * 0.5 * (1.0 + Math.Sin(s.Z + 10 * _noise.Turb(s, 7)));
     }
 }
