@@ -33,8 +33,6 @@ public struct AABB
         X = ix;
         Y = iy;
         Z = iz;
-
-        PadToMinimums();
     }
 
     public AABB(Vector3D<double> a, Vector3D<double> b)
@@ -42,8 +40,6 @@ public struct AABB
         X = new Interval(Math.Min(a[0], b[0]), Math.Max(a[0], b[0]));
         Y = new Interval(Math.Min(a[1], b[1]), Math.Max(a[1], b[1]));
         Z = new Interval(Math.Min(a[2], b[2]), Math.Max(a[2], b[2]));
-
-        PadToMinimums();
     }
 
     public AABB(AABB box0, AABB box1)
@@ -51,8 +47,6 @@ public struct AABB
         X = new Interval(box0.X, box1.X);
         Y = new Interval(box0.Y, box1.Y);
         Z = new Interval(box0.Z, box1.Z);
-
-        PadToMinimums();
     }
 
     public readonly bool Hit(Ray ray, Interval ray_t)
@@ -81,6 +75,17 @@ public struct AABB
         return true;
     }
 
+    public readonly AABB Pad()
+    {
+        double delta = 0.0001;
+
+        Interval newX = X.Size >= delta ? X : X.Expand(delta);
+        Interval newY = Y.Size >= delta ? Y : Y.Expand(delta);
+        Interval newZ = Z.Size >= delta ? Z : Z.Expand(delta);
+
+        return new AABB(newX, newY, newZ);
+    }
+
     public readonly int LongestAxis()
     {
         if (X.Size > Y.Size)
@@ -90,26 +95,6 @@ public struct AABB
         else
         {
             return Y.Size > Z.Size ? 1 : 2;
-        }
-    }
-
-    private void PadToMinimums()
-    {
-        double delta = 0.0001;
-
-        if (X.Size < delta)
-        {
-            X = X.Expand(delta);
-        }
-
-        if (Y.Size < delta)
-        {
-            Y = Y.Expand(delta);
-        }
-
-        if (Z.Size < delta)
-        {
-            Z = Z.Expand(delta);
         }
     }
 }
