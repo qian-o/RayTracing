@@ -13,16 +13,21 @@ public class Chapter4 : IChapter
 {
     public void Run()
     {
-        int index = MathHelper.RandomInt(0, 1);
-        index = 1;
+        int index = 3;
 
         switch (index)
         {
-            case 0:
+            case 1:
                 RandomSpheres();
                 break;
-            case 1:
+            case 2:
                 TwoSpheres();
+                break;
+            case 3:
+                Earth();
+                break;
+            default:
+                RandomSpheres();
                 break;
         }
     }
@@ -122,5 +127,27 @@ public class Chapter4 : IChapter
         };
 
         camera.Render(world);
+    }
+
+    private static void Earth()
+    {
+        ImageTexture earthTexture = new("Resources/Images/earthmap.jpg".FormatFilePath());
+        Lambertian earthSurface = new(earthTexture);
+        Sphere globe = new(new Vector3D<double>(0, 0, 0), 2, earthSurface);
+
+        Camera camera = new()
+        {
+            AspectRatio = 16.0 / 9.0,
+            ImageWidth = 400,
+            Samples = 100,
+            MaxDepth = 50,
+            Fov = 20.0,
+            LookFrom = new Vector3D<double>(0.0, 0.0, 12.0),
+            LookAt = new Vector3D<double>(0.0, 0.0, 0.0),
+            Up = new Vector3D<double>(0.0, 1.0, 0.0),
+            DefocusAngle = 0.0
+        };
+
+        camera.Render(new HittableList(globe));
     }
 }

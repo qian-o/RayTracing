@@ -3,21 +3,21 @@ using TheNextWeek.Contracts.Materials;
 
 namespace TheNextWeek.Utils;
 
-public class HitRecord
+public struct HitRecord
 {
-    public Vector3D<double> P { get; set; }
+    public Vector3D<double> P;
 
-    public Vector3D<double> Normal { get; set; }
+    public Vector3D<double> Normal;
 
-    public Material? Mat { get; set; }
+    public Material? Mat;
 
-    public double T { get; set; }
+    public double T;
 
-    public double U { get; set; }
+    public double U;
 
-    public double V { get; set; }
+    public double V;
 
-    public bool FrontFace { get; set; }
+    public bool FrontFace;
 
     public void SetFaceNormal(Ray ray, Vector3D<double> outward_normal)
     {

@@ -71,6 +71,7 @@ public class Sphere : Hittable
         hit_record.P = ray.At(hit_record.T);
         Vector3D<double> outward_normal = (hit_record.P - center) / _radius;
         hit_record.SetFaceNormal(ray, outward_normal);
+        GetSphereUV(outward_normal, out hit_record.U, out hit_record.V);
         hit_record.Mat = _mat;
 
         return true;
@@ -84,5 +85,14 @@ public class Sphere : Hittable
         }
 
         return _center + time * _centerVec;
+    }
+
+    private static void GetSphereUV(Vector3D<double> p, out double u, out double v)
+    {
+        double theta = Math.Acos(-p.Y);
+        double phi = Math.Atan2(-p.Z, p.X) + Math.PI;
+
+        u = phi / (2 * Math.PI);
+        v = theta / Math.PI;
     }
 }
