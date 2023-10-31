@@ -1,5 +1,6 @@
 ﻿using Silk.NET.Maths;
 using TheNextWeek.Contracts.Chapters;
+using TheNextWeek.Helpers;
 using TheNextWeek.Materials;
 using TheNextWeek.Models;
 using TheNextWeek.Textures;
@@ -7,56 +8,9 @@ using TheNextWeek.Utils;
 
 namespace TheNextWeek.Chapters;
 
-public class Chapter7 : IChapter
+public class Chapter8 : IChapter
 {
     public void Run()
-    {
-        int index = 2;
-
-        switch (index)
-        {
-            case 1:
-                SimpleLight();
-                break;
-            case 2:
-                CornellBox();
-                break;
-            default:
-                SimpleLight();
-                break;
-        }
-    }
-
-    private static void SimpleLight()
-    {
-        HittableList world = new();
-
-        NoiseTexture pertext = new(4);
-        world.Add(new Sphere(new Vector3D<double>(0.0, -1000.0, 0.0), 1000.0, new Lambertian(pertext)));
-        world.Add(new Sphere(new Vector3D<double>(0.0, 2.0, 0.0), 2.0, new Lambertian(pertext)));
-
-        DiffuseLight difflight = new(new SolidColor(new Vector3D<double>(4.0, 4.0, 4.0)));
-        world.Add(new Sphere(new Vector3D<double>(0.0, 7.0, 0.0), 2.0, difflight));
-        world.Add(new Quad(new Vector3D<double>(3.0, 1.0, -2.0), new Vector3D<double>(2.0, 0.0, 0.0), new Vector3D<double>(0.0, 2.0, 0.0), difflight));
-
-        Camera camera = new()
-        {
-            AspectRatio = 16.0 / 9.0,
-            ImageWidth = 400,
-            Samples = 100,
-            MaxDepth = 50,
-            Background = new Vector3D<double>(0.0, 0.0, 0.0),
-            Fov = 20.0,
-            LookFrom = new Vector3D<double>(26.0, 3.0, 6.0),
-            LookAt = new Vector3D<double>(0.0, 2.0, 0.0),
-            Up = new Vector3D<double>(0.0, 1.0, 0.0),
-            DefocusAngle = 0.0
-        };
-
-        camera.Render(world);
-    }
-
-    private static void CornellBox()
     {
         HittableList world = new();
 
@@ -71,6 +25,9 @@ public class Chapter7 : IChapter
         world.Add(new Quad(new Vector3D<double>(0.0, 0.0, 0.0), new Vector3D<double>(555.0, 0.0, 0.0), new Vector3D<double>(0.0, 0.0, 555.0), white));
         world.Add(new Quad(new Vector3D<double>(555.0, 555.0, 555.0), new Vector3D<double>(-555.0, 0.0, 0.0), new Vector3D<double>(0.0, 0.0, -555.0), white));
         world.Add(new Quad(new Vector3D<double>(0.0, 0.0, 555.0), new Vector3D<double>(555.0, 0.0, 0.0), new Vector3D<double>(0.0, 555.0, 0.0), white));
+
+        world.Add(HittableHelper.Box(new Vector3D<double>(130.0, 0.0, 65.0), new Vector3D<double>(295.0, 165.0, 230.0), white));
+        world.Add(HittableHelper.Box(new Vector3D<double>(265.0, 0.0, 295.0), new Vector3D<double>(430.0, 330.0, 460.0), white));
 
         Camera camera = new()
         {
