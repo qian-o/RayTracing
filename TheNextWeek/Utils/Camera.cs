@@ -11,6 +11,7 @@ public class Camera
     private int image_height;
     private int samples_per_pixel = 10;
     private int max_depth = 10;
+    private Vector3D<double> background = new(0.0, 0.0, 0.0);
     private double fov = 90.0;
     private Vector3D<double> lookfrom = new(0.0, 0.0, -1.0);
     private Vector3D<double> lookat = new(0.0, 0.0, 0.0);
@@ -34,6 +35,8 @@ public class Camera
     public int Samples { get => samples_per_pixel; set => samples_per_pixel = value; }
 
     public int MaxDepth { get => max_depth; set => max_depth = value; }
+
+    public Vector3D<double> Background { get => background; set => background = value; }
 
     public double Fov { get => fov; set => fov = value; }
 
@@ -143,26 +146,31 @@ public class Camera
         return center + (p.X * defocus_disk_u) + (p.Y * defocus_disk_v);
     }
 
-    public static Vector3D<double> RayColor(Ray ray, int depth, Hittable world)
+    public Vector3D<double> RayColor(Ray ray, int depth, Hittable world)
     {
+        HitRecord rec = new();
+
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)
         {
             return Vector3D<double>.Zero;
         }
 
-        HitRecord rec = new();
-        if (world.Hit(ray, new Interval(0.001, double.PositiveInfinity), ref rec))
+        if (!world.Hit(ray, new Interval(0.001, double.PositiveInfinity), ref rec))
         {
-            return rec.Mat!.Scatter(ray, rec, out Vector3D<double> attenuation, out Ray scattered)
-                ? attenuation * RayColor(scattered, depth - 1, world)
-                : Vector3D<double>.Zero;
+            return background;
         }
 
-        Vector3D<double> unit_direction = Vector3D.Normalize(ray.Direction);
-        double a = 0.5 * (unit_direction.Y + 1.0);
+        Vector3D<double> color_from_emission = rec.Mat!.Emitted(rec.U, rec.V, rec.P);
 
-        return (1.0 - a) * Vector3D<double>.One + a * new Vector3D<double>(0.5, 0.7, 1.0);
+        if (!rec.Mat.Scatter(ray, rec, out Vector3D<double> attenuation, out Ray scattered))
+        {
+            return color_from_emission;
+        }
+
+        Vector3D<double> color_from_scatter = attenuation * RayColor(scattered, depth - 1, world);
+
+        return color_from_emission + color_from_scatter;
     }
 
     public static double LinearToGamma(double linear_component)

@@ -30,6 +30,7 @@ public class Chapter6 : IChapter
             ImageWidth = 400,
             Samples = 100,
             MaxDepth = 50,
+            Background = new Vector3D<double>(0.70, 0.80, 1.00),
             Fov = 80.0,
             LookFrom = new Vector3D<double>(0, 0, 9),
             LookAt = new Vector3D<double>(0, 0, 0),

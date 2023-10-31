@@ -3,7 +3,7 @@ using TheNextWeek.Contracts.Chapters;
 
 DateTime beginTime = DateTime.Now;
 
-IChapter chapter = new Chapter6();
+IChapter chapter = new Chapter7();
 
 chapter.Run();
 
