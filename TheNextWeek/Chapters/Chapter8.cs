@@ -1,5 +1,6 @@
 ﻿using Silk.NET.Maths;
 using TheNextWeek.Contracts.Chapters;
+using TheNextWeek.Contracts.Models;
 using TheNextWeek.Helpers;
 using TheNextWeek.Materials;
 using TheNextWeek.Models;
@@ -26,8 +27,15 @@ public class Chapter8 : IChapter
         world.Add(new Quad(new Vector3D<double>(555.0, 555.0, 555.0), new Vector3D<double>(-555.0, 0.0, 0.0), new Vector3D<double>(0.0, 0.0, -555.0), white));
         world.Add(new Quad(new Vector3D<double>(0.0, 0.0, 555.0), new Vector3D<double>(555.0, 0.0, 0.0), new Vector3D<double>(0.0, 555.0, 0.0), white));
 
-        world.Add(HittableHelper.Box(new Vector3D<double>(130.0, 0.0, 65.0), new Vector3D<double>(295.0, 165.0, 230.0), white));
-        world.Add(HittableHelper.Box(new Vector3D<double>(265.0, 0.0, 295.0), new Vector3D<double>(430.0, 330.0, 460.0), white));
+        Hittable box1 = HittableHelper.Box(new Vector3D<double>(0.0, 0.0, 0.0), new Vector3D<double>(165.0, 330.0, 165.0), white);
+        box1 = new RotateY(box1, 15.0);
+        box1 = new Translate(box1, new Vector3D<double>(265.0, 0.0, 295.0));
+        world.Add(box1);
+
+        Hittable box2 = HittableHelper.Box(new Vector3D<double>(0.0, 0.0, 0.0), new Vector3D<double>(165.0, 165.0, 165.0), white);
+        box2 = new RotateY(box2, -18.0);
+        box2 = new Translate(box2, new Vector3D<double>(130.0, 0.0, 65.0));
+        world.Add(box2);
 
         Camera camera = new()
         {

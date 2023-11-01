@@ -49,6 +49,16 @@ public struct AABB
         Z = new Interval(box0.Z, box1.Z);
     }
 
+    public static AABB operator +(AABB bbox, Vector3D<double> offset)
+    {
+        return new AABB(bbox.X + offset.X, bbox.Y + offset.Y, bbox.Z + offset.Z);
+    }
+
+    public static AABB operator +(Vector3D<double> offset, AABB bbox)
+    {
+        return bbox + offset;
+    }
+
     public readonly bool Hit(Ray ray, Interval ray_t)
     {
         for (int a = 0; a < 3; a++)

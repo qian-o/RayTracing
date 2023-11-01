@@ -24,6 +24,16 @@ public struct Interval
         Max = Math.Max(a.Max, b.Max);
     }
 
+    public static Interval operator +(Interval interval, double delta)
+    {
+        return new Interval(interval.Min + delta, interval.Max + delta);
+    }
+
+    public static Interval operator +(double delta, Interval interval)
+    {
+        return interval + delta;
+    }
+
     public readonly bool Contains(double value) => Min <= value && value <= Max;
 
     public readonly bool Surrounds(double value) => Min < value && value < Max;

@@ -86,4 +86,22 @@ public static class MathHelper
 
         return r_out_perp + r_out_parallel;
     }
+
+    public static void Set(this ref Vector3D<double> vector, int index, double value)
+    {
+        switch (index)
+        {
+            case 0:
+                vector.X = value;
+                break;
+            case 1:
+                vector.Y = value;
+                break;
+            case 2:
+                vector.Z = value;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(index));
+        }
+    }
 }
