@@ -14,9 +14,9 @@ public class Chapter10 : IChapter
 {
     public void Run()
     {
-        // FinalScene(400, 250, 4);
+        FinalScene(400, 250, 4);
 
-        FinalScene(800, 10000, 40);
+        // FinalScene(800, 10000, 40);
     }
 
     private static void FinalScene(int imageWidth, int samples, int maxDepth)
